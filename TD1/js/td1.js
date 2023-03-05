@@ -181,19 +181,15 @@ asideEls.forEach((asideEl) => {
 });
 
 function search() {
-	// Récupération du texte de recherche et suppression des espaces en début et fin de chaîne
 	var searchText = document.getElementById("searchText").value.trim();
 
-	// Vérification que le texte de recherche n'est pas vide
 	if (searchText.length == 0) {
 		return;
 	}
 
-	// Recherche des éléments à surligner dans le corps de la page
 	var body = document.getElementsByTagName("body")[0];
 	var elementsToHighlight = searchForText(body, searchText);
 
-	// Sauvegarde de la page si c'est la première utilisation de la fonction
 	if (!window.pageSaved) {
 		window.pageSaved = body.cloneNode(true);
 	}
@@ -249,26 +245,20 @@ function searchForText(element, searchText) {
 }
 
 function interactiveSearch() {
-	// Récupérer le texte saisi dans le champ de recherche
 	const searchText = document.getElementById("interactive-search-text").value;
 
 	if (searchText === "") {
 		removeSelection();
 	}
 
-	// Parcourir tous les éléments de la page
 	const pageElements = document.getElementsByTagName("p");
 	for (let i = 0; i < pageElements.length; i++) {
 		const element = pageElements[i];
 
-		// Vérifier que l'élément n'est pas un champ de recherche
 		if (element.id !== "interactive-search-text" && element.tagName !== "SCRIPT") {
-			// Récupérer le contenu textuel de l'élément
 			const elementText = element.textContent || element.innerText;
 
-			// Vérifier si le texte recherché est présent dans l'élément
 			if (elementText.indexOf(searchText) !== -1) {
-				// Remplacer toutes les occurrences du texte par une balise <span>
 				const re = new RegExp(searchText, "gi");
 				element.innerHTML = element.innerHTML.replace(re, (match) => `<span class="select">${match}</span>`);
 			}
@@ -276,8 +266,6 @@ function interactiveSearch() {
 	}
 }
 
-
-// Fonction pour supprimer les surlignages existants
 function removeSelection() {
 	const selectElements = document.querySelectorAll('.select');
 	selectElements.forEach((selectElement) => {
