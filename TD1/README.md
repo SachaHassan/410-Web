@@ -1,4 +1,5 @@
-# M413 - TD1 : Réponses aux Questions
+# M413 - TD1 : Réponses aux Questions. 
+#### (Pour voir toute le code de manière plus claire, vous pouvez le consulter sur le Word)
 
 ## Exercice 1
 
