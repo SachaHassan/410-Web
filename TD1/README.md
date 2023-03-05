@@ -124,7 +124,7 @@ J'ai utilisé la méthode setInterval de l'objet window. Cette méthode est util
 
 Je l'ai utilisée pour mettre à jour l'heure affichée dans la balise <p> toutes les secondes, afin de toujours afficher l'heure actuelle. La méthode setInterval prend en paramètre la fonction à exécuter et l'intervalle en millisecondes entre chaque exécution.
 
-Exercice 8.1
+## Exercice 8.1
 
 ### ➢ Quel évènement avez-vous utilisé ? 
 
