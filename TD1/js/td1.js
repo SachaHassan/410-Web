@@ -180,62 +180,108 @@ asideEls.forEach((asideEl) => {
 	});
 });
 
-let originalPage;
-
-window.onload = function() {
-	originalPage = document.body.innerHTML;
-}
-
-const searchInput = document.querySelector('#searchText');
-
 function search() {
-	if (!originalPage) {
-		originalPage = document.body.innerHTML;
-	}
+	// Récupération du texte de recherche et suppression des espaces en début et fin de chaîne
+	var searchText = document.getElementById("searchText").value.trim();
 
-	const searchText = searchInput.value.trim();
-
-	if (!searchText) {
-		alert('Veuillez entrer un texte à rechercher');
+	// Vérification que le texte de recherche n'est pas vide
+	if (searchText.length == 0) {
 		return;
 	}
 
-	const searchRegex = new RegExp(searchText, 'gi');
+	// Recherche des éléments à surligner dans le corps de la page
+	var body = document.getElementsByTagName("body")[0];
+	var elementsToHighlight = searchForText(body, searchText);
 
-	const div = document.createElement('div');
-	div.innerHTML = originalPage;
+	// Sauvegarde de la page si c'est la première utilisation de la fonction
+	if (!window.pageSaved) {
+		window.pageSaved = body.cloneNode(true);
+	}
 
-	const bodyElements = div.getElementsByTagName('*');
+	// Restauration de la page
+	var pageToRestore = window.pageSaved.cloneNode(true);
+	body.parentNode.replaceChild(pageToRestore, body);
 
-		console.log('Vérification de l\'élément', element, 'avec le texte', searchText, 'et l\'expression régulière', searchRegex, '...');
-			if (node.nodeType === 3) {
-				console.log('Nœud texte trouvé :', node.textContent);
-				const originalText = node.textContent;
-				const newText = originalText.replace(searchRegex, `<span class="select">${searchText}</span>`);
+	// Surlignage des éléments trouvés
+	for (var i = 0; i < elementsToHighlight.length; i++) {
+		var span = document.createElement("span");
+		span.className = "select";
+		span.style.backgroundColor = "yellow";
+		var node = document.createTextNode(searchText);
+		span.appendChild(node);
+		elementsToHighlight[i].parentNode.replaceChild(span, elementsToHighlight[i]);
+	}
+}
 
-				if (newText !== originalText) {
-					console.log('Nouveau texte :', newText);
-					const newElement = document.createElement('span');
-					newElement.innerHTML = newText;
-					newElement.classList.add('select');
-					element.replaceChild(newElement, node);
+function searchForText(element, searchText) {
+	var elementsToHighlight = [];
+	for (var i = 0; i < element.childNodes.length; i++) {
+		var node = element.childNodes[i];
+		if (node.nodeType == Node.TEXT_NODE) {
+			var text = node.nodeValue.trim();
+			var index = text.indexOf(searchText);
+			if (index != -1) {
+				var before = text.substring(0, index);
+				var after = text.substring(index + searchText.length);
+				var spanBefore = document.createTextNode(before);
+				var spanAfter = document.createTextNode(after);
+				var span = document.createElement("span");
+				span.className = "select";
+				span.style.backgroundColor = "yellow";
+				var spanMiddle = document.createTextNode(searchText);
+				span.appendChild(spanMiddle);
+				if (before.length > 0) {
+					elementsToHighlight.push(spanBefore);
+				}
+				elementsToHighlight.push(span);
+				if (after.length > 0) {
+					elementsToHighlight.push(spanAfter);
 				}
 			}
+		} else if (node.nodeType == Node.ELEMENT_NODE) {
+			var childElementsToHighlight = searchForText(node, searchText);
+			for (var j = 0; j < childElementsToHighlight.length; j++) {
+				elementsToHighlight.push(childElementsToHighlight[j]);
+			}
+		}
+	}
+	return elementsToHighlight;
+}
 
+function interactiveSearch() {
+	// Récupérer le texte saisi dans le champ de recherche
+	const searchText = document.getElementById("interactive-search-text").value;
 
-	// Remplace le corps du document par le contenu de la div modifiée
-	document.body.innerHTML = div.innerHTML;
+	if (searchText === "") {
+		removeSelection();
+	}
+
+	// Parcourir tous les éléments de la page
+	const pageElements = document.getElementsByTagName("p");
+	for (let i = 0; i < pageElements.length; i++) {
+		const element = pageElements[i];
+
+		// Vérifier que l'élément n'est pas un champ de recherche
+		if (element.id !== "interactive-search-text" && element.tagName !== "SCRIPT") {
+			// Récupérer le contenu textuel de l'élément
+			const elementText = element.textContent || element.innerText;
+
+			// Vérifier si le texte recherché est présent dans l'élément
+			if (elementText.indexOf(searchText) !== -1) {
+				// Remplacer toutes les occurrences du texte par une balise <span>
+				const re = new RegExp(searchText, "gi");
+				element.innerHTML = element.innerHTML.replace(re, (match) => `<span class="select">${match}</span>`);
+			}
+		}
+	}
 }
 
 
-const count = 4
-const inputs = ["1 11 111 1111"].split(" ");
-
-let sum = 0;
-for (let i = 0; i < count; i++) {
-	const unary = inputs[i];
-	sum += unary.length;
+// Fonction pour supprimer les surlignages existants
+function removeSelection() {
+	const selectElements = document.querySelectorAll('.select');
+	selectElements.forEach((selectElement) => {
+		const textNode = document.createTextNode(selectElement.textContent);
+		selectElement.parentNode.replaceChild(textNode, selectElement);
+	});
 }
-
-const result = '1'.repeat(sum);
-console.log(result);
