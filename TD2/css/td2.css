@@ -1,0 +1,43 @@
+@charset "utf-8";
+
+* {
+	margin: 0px;
+	padding: 0px;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, serif;
+	font-size: 14px;
+	color: #333;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+a:focus {
+	text-decoration: none;
+}
+
+p{
+	margin: 10px;
+}
+
+h2{
+	margin: 10px;
+}
+
+#insert-div{
+	margin-left: 40%;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.selected{
+	background-color: #0080ff;
+}
